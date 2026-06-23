@@ -432,7 +432,26 @@
   audio.onplay=()=>{ fab.innerHTML=pauseIcon; fab.classList.add('playing'); };
   audio.onpause=()=>{ fab.innerHTML=playIcon; fab.classList.remove('playing'); };
 
+  /* ---------- permanent gallery (served from the site, visible to everyone) ---------- */
+  async function loadGallery(){
+    try{
+      const res = await fetch('gallery/gallery.json', { cache: 'no-store' });
+      if(!res.ok) return;
+      const data = await res.json();
+      const files = Array.isArray(data) ? data : (data.images || []);
+      files.forEach(name => images.push('gallery/' + name));
+      // optional permanent background music
+      if(data && data.music){
+        audio.src = 'gallery/' + data.music;
+        trackName.textContent = '🎵 ' + data.music;
+        fab.classList.add('show');
+      }
+      if(images.length){ current = 0; render(); restart(); }
+    }catch(e){ /* no gallery yet — slideshow stays in upload mode */ }
+  }
+
   render();
+  loadGallery();
 </script>
 </body>
 </html>
