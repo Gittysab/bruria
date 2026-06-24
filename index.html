@@ -81,6 +81,11 @@
   }
   @keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
 
+  /* when a logo image is supplied, show it cleanly instead of the text badge */
+  .hero.has-logo { background: transparent; box-shadow: none; border: none; padding: 0; overflow: visible; }
+  .hero.has-logo::before { display: none; }
+  .hero-logo { display: block; width: min(360px, 80%); height: auto; margin: 0 auto; }
+
   .bow { width: 78px; height: auto; margin: -6px auto 2px; display: block; animation: sway 4s ease-in-out infinite; transform-origin: top center; }
   @keyframes sway { 0%,100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
 
@@ -531,6 +536,15 @@
         fab.classList.add('show');
         autoPlayMusic();
       }
+      // optional logo image (replaces the text badge if the file exists)
+      const logoSrc = 'gallery/' + (data.logo || 'logo.png');
+      const logoImg = new Image();
+      logoImg.onload = () => {
+        const hero = document.querySelector('.hero');
+        hero.classList.add('has-logo');
+        hero.innerHTML = `<img class="hero-logo" src="${logoSrc}" alt="ברוריה בת מצווה">`;
+      };
+      logoImg.src = logoSrc;
       if(images.length){ current = 0; render(); restart(); }
     }catch(e){ /* no gallery yet — slideshow stays in upload mode */ }
   }
